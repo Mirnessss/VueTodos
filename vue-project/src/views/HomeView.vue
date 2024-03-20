@@ -1,9 +1,37 @@
 <script setup>
 import { uid } from "uid";
-import { ref } from "vue";
+import { ref, watch, computed } from "vue";
 import TodoCreator from "../components/TodoCreator.vue";
+import TodoItem from "../components/TodoItem.vue";
+import { Icon } from "@iconify/vue"
 
 const todoList = ref([]);
+
+watch(todoList, () => {
+  setTodoListLocalStorage();
+},
+  {
+    deep: true
+  }
+);
+
+const todoCompleted = computed(() => {
+  return todoList.value.every((todo) => todo.isCompleted);
+});
+
+const fetchTodoList = () => {
+  const savedTodoList = JSON.parse(localStorage.getItem("todoList"));
+  if (savedTodoList) {
+    todoList.value = savedTodoList;
+  }
+};
+
+fetchTodoList();
+
+const setTodoListLocalStorage = () => {
+  localStorage.setItem("todoList", JSON.stringify(todoList.value));
+};
+
 const createTodo = (todo) => {
   todoList.value.push({
     id: uid(),
@@ -12,12 +40,41 @@ const createTodo = (todo) => {
     isEditing: null,
   });
 };
+
+const toggleTodoComplete = (todoPos) => {
+  todoList.value[todoPos].isCompleted = !todoList.value[todoPos].isCompleted;
+};
+
+const toggleEditTodo = (todoPos) => {
+  todoList.value[todoPos].isEditing = !todoList.value[todoPos].isEditing;
+};
+
+const updateTodo = (todoVal, todoPos) => {
+  todoList.value[todoPos].todo = todoVal;
+};
+
+const deleteTodo = (todoId) => {
+  todoList.value = todoList.value.filter((todo) => todo.id !== todoId);
+};
+
 </script>
 
 <template>
   <main>
     <h1>Create Todo</h1>
     <TodoCreator @create-todo="createTodo" />
+    <ul class="todo-list" v-if="todoList.length > 0">
+      <TodoItem v-for="(todo, index) in todoList" :todo="todo" :index="index" @toggle-complete="toggleTodoComplete"
+        @edit-todo="toggleEditTodo" @update-todo="updateTodo" @delete-todo="deleteTodo" />
+    </ul>
+    <p class="todos-msg" v-else>
+      <Icon icon="emojione:sad-but-relieved-face" width="22" />
+      <span>You have no todo's to complete! Add one!</span>
+    </p>
+    <p v-if="todoCompleted && todoList.length > 0" class="todos-msg">
+      <Icon icon="emojione:relieved-face" width="22" />
+      <span>You have completed all your todos</span>
+    </p>
   </main>
 </template>
 
@@ -38,5 +95,21 @@ h1 {
   color: purple;
   font-size: xx-large;
   font-weight: 500;
+}
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin-top: 24px;
+  gap: 20px;
+}
+
+.todos-msg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
 }
 </style>

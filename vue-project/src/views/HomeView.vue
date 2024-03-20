@@ -24,19 +24,19 @@ const createTodo = (todo) => {
 
 <style lang="scss" scoped>
 main {
-    display: flex;
-    flex-direction: column;
-    max-width: 500px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 40px 16px;
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 16px;
 }
 
 h1 {
-    margin-bottom: 16px;
-    text-align: center;
-    color: purple;
-    font-size: xx-large;
-    font-weight: 500;
+  margin-bottom: 16px;
+  text-align: center;
+  color: purple;
+  font-size: xx-large;
+  font-weight: 500;
 }
 </style>

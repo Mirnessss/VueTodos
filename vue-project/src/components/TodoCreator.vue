@@ -58,9 +58,10 @@ const createTodo = () => {
     padding: 8px 16px;
     border: none;
     background-color: purple;
-    color:white;
+    color: white;
+
     &:hover {
-        background-color: rgb(179, 2, 179);
+      background-color: rgb(179, 2, 179);
     }
   }
 }
